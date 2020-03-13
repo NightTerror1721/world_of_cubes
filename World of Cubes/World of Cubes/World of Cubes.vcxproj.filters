@@ -1,6 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\impl\main.cpp" />
+    <ClCompile Include="src\impl\lua.cpp">
+      <Filter>support</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="support">
+      <UniqueIdentifier>{3e0a82d7-dea1-437c-afb5-ba7aa512cd6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="support\vector_impl">
+      <UniqueIdentifier>{3ef0c1e0-96f7-42ce-beed-8776ef43d4c9}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\include\support\lua.h">
+      <Filter>support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\support\vectors.h">
+      <Filter>support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\support\vector_impl\vector2d.h">
+      <Filter>support\vector_impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\support\vector_impl\vector3d.h">
+      <Filter>support\vector_impl</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
