@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <cmath>
+#include <cstdint>
 
 template<typename _Ty>
 class Vector2
@@ -32,6 +33,8 @@ public:
 	double length() const;
 
 	Vector2& normalize();
+	Vector2 normalize() const;
+	static Vector2 normalize(const Vector2& v);
 
 	float distance(const Vector2& v);
 
@@ -43,6 +46,9 @@ public:
 
 	template<typename _Ty2>
 	explicit operator Vector2<_Ty2>();
+
+	_Ty& operator[] (size_t index);
+	const _Ty& operator[] (size_t index) const;
 };
 
 
@@ -176,6 +182,12 @@ template<typename _Ty>
 Vector2<_Ty>& Vector2<_Ty>::normalize() { return *this *= static_cast<_Ty>(length()); }
 
 template<typename _Ty>
+Vector2<_Ty> Vector2<_Ty>::normalize() const { return operator*(static_cast<_Ty>(length())); }
+
+template<typename _Ty>
+Vector2<_Ty> Vector2<_Ty>::normalize(const Vector2& v) { return v * v.length(); }
+
+template<typename _Ty>
 float Vector2<_Ty>::distance(const Vector2<_Ty>& v) { return (v - *this).length(); }
 
 template<typename _Ty>
@@ -192,6 +204,28 @@ Vector2<_Ty>::Vector2(const Vector2<_Ty2>& v) :
 
 template<typename _Ty> template<typename _Ty2>
 Vector2<_Ty>::operator Vector2<_Ty2>() { return Vector2<_Ty2>{ *this }; }
+
+template<typename _Ty>
+_Ty& Vector2<_Ty>::operator[] (size_t index)
+{
+	switch (index)
+	{
+		default:
+		case 0: return x;
+		case 1: return y;
+	}
+}
+
+template<typename _Ty>
+const _Ty& Vector2<_Ty>::operator[] (size_t index) const
+{
+	switch (index)
+	{
+		default:
+		case 0: return x;
+		case 1: return y;
+	}
+}
 
 
 
@@ -243,7 +277,7 @@ Vector2<_Ty> operator+ (const Vector2<_Ty>& v0, _Ty value)
 template<typename _Ty>
 Vector2<_Ty> operator- (const Vector2<_Ty>& v0, _Ty value)
 {
-	return { v0.x + value, v0.y + value };
+	return { v0.x - value, v0.y - value };
 }
 
 template<typename _Ty>

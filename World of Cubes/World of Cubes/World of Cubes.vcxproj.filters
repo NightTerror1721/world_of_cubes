@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="src\impl\main.cpp" />
-    <ClCompile Include="src\impl\lua.cpp">
+    <ClCompile Include="src\impl\matrix44.cpp">
       <Filter>support</Filter>
     </ClCompile>
   </ItemGroup>
@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\include\support\lua.h">
-      <Filter>support</Filter>
-    </ClInclude>
     <ClInclude Include="src\include\support\vectors.h">
       <Filter>support</Filter>
     </ClInclude>
@@ -26,6 +23,12 @@
     </ClInclude>
     <ClInclude Include="src\include\support\vector_impl\vector3d.h">
       <Filter>support\vector_impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\support\vector_impl\vector4d.h">
+      <Filter>support\vector_impl</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\support\matrix44.h">
+      <Filter>support</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
