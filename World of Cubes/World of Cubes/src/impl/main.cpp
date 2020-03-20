@@ -2,6 +2,11 @@
 
 #include "support/vectors.h"
 #include "support/matrix44.h"
+#include "support/color.h"
+#include "support/SDL.h"
+
+#include <sfml/Graphics/Shader.hpp>
+
 
 int main(int argc, char** argv)
 {
@@ -18,6 +23,16 @@ int main(int argc, char** argv)
 
 	size_t s = sizeof(mat4);
 
+	vec3f vcol = static_cast<vec3f>(Color::BLUE);
+
+	sdl::initiate();
+
+	/*for (const sdl::DisplayMode& mode : sdl::GetAllDisplayModes())
+	{
+		std::cout << "[w=" << mode.width << "; h=" << mode.height << "; f=" << mode.format << "; fr=" << mode.framerate << "]" << std::endl;
+	}*/
+
+	sdl::quit();
 
 	/*lua::LuaState state;
 	lua::LuaScript script;
@@ -27,6 +42,8 @@ int main(int argc, char** argv)
 	//state.loadScript("test-scripts/test.lua");
 	script.load("test-scripts/test.lua");
 	script.execute(&state);*/
+
+	//SDL_Event e;
 
 
 

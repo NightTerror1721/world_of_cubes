@@ -1,6 +1,6 @@
 #include "support/matrix44.h"
 
-#include <cmath>
+#include "support/math.h"
 
 Matrix4x4::Matrix4x4() :
 	_11{ 1 }, _12{ 0 }, _13{ 0 }, _14{ 0 },
@@ -254,11 +254,153 @@ vec4f Matrix4x4::getColumn(size_t index)
     }
 }
 
-Matrix4x4 Matrix4x4::scaling(const vec3f& scaleFactors);
+Matrix4x4 Matrix4x4::scale(const vec3f& scaleFactors)
+{
+    return operator*(*this, scaling(scaleFactors));
+}
 
-Matrix4x4 Matrix4x4::translation(const vec3f& pos);
+Matrix4x4 Matrix4x4::translate(const vec3f& pos)
+{
+    return operator*(*this, translation(pos));
+}
 
-Matrix4x4 Matrix4x4::rotation(const vec3f& axis, float angle, const vec3f& center);
+Matrix4x4 Matrix4x4::rotate(const vec3f& axis, float angle, const vec3f& center)
+{
+    return operator*(*this, rotation(axis, angle, center));
+}
+
+Matrix4x4 Matrix4x4::rotate(const vec3f& axis, float angle)
+{
+    return operator*(*this, rotation(axis, angle));
+}
+
+Matrix4x4 Matrix4x4::rotate(float yaw, float pitch, float roll)
+{
+    return operator*(*this, rotation(yaw, pitch, roll));
+}
+
+Matrix4x4 Matrix4x4::rotate(const vec3f& basis1, const vec3f& basis2, const vec3f& basis3)
+{
+    return operator*(*this, rotation(basis1, basis2, basis3));
+}
+
+Matrix4x4 Matrix4x4::rotateX(float theta)
+{
+    return operator*(*this, rotationX(theta));
+}
+
+Matrix4x4 Matrix4x4::rotateY(float theta)
+{
+    return operator*(*this, rotationY(theta));
+}
+
+Matrix4x4 Matrix4x4::rotateZ(float theta)
+{
+    return operator*(*this, rotationZ(theta));
+}
+
+
+
+Matrix4x4 Matrix4x4::localScale(const vec3f& scaleFactors)
+{
+    return operator*(scaling(scaleFactors), *this);
+}
+
+Matrix4x4 Matrix4x4::localTranslate(const vec3f& pos)
+{
+    return operator*(translation(pos), *this);
+}
+
+Matrix4x4 Matrix4x4::localRotate(const vec3f& axis, float angle, const vec3f& center)
+{
+    return operator*(rotation(axis, angle, center), *this);
+}
+
+Matrix4x4 Matrix4x4::localRotate(const vec3f& axis, float angle)
+{
+    return operator*(rotation(axis, angle), *this);
+}
+
+Matrix4x4 Matrix4x4::localRotate(float yaw, float pitch, float roll)
+{
+    return operator*(rotation(yaw, pitch, roll), *this);
+}
+
+Matrix4x4 Matrix4x4::localRotate(const vec3f& basis1, const vec3f& basis2, const vec3f& basis3)
+{
+    return operator*(rotation(basis1, basis2, basis3), *this);
+}
+
+Matrix4x4 Matrix4x4::localRotateX(float theta)
+{
+    return operator*(rotationX(theta), *this);
+}
+
+Matrix4x4 Matrix4x4::localRotateY(float theta)
+{
+    return operator*(rotationY(theta), *this);
+}
+
+Matrix4x4 Matrix4x4::localRotateZ(float theta)
+{
+    return operator*(rotationZ(theta), *this);
+}
+
+
+Matrix4x4 Matrix4x4::scaling(const vec3f& scaleFactors)
+{
+    Matrix4x4 result;
+    result.mat[0][0] = scaleFactors.x;
+    result.mat[1][0] = 0.0f;
+    result.mat[2][0] = 0.0f;
+    result.mat[3][0] = 0.0f;
+
+    result.mat[0][1] = 0.0f;
+    result.mat[1][1] = scaleFactors.y;
+    result.mat[2][1] = 0.0f;
+    result.mat[3][1] = 0.0f;
+
+    result.mat[0][2] = 0.0f;
+    result.mat[1][2] = 0.0f;
+    result.mat[2][2] = scaleFactors.z;
+    result.mat[3][2] = 0.0f;
+
+    result.mat[0][3] = 0.0f;
+    result.mat[1][3] = 0.0f;
+    result.mat[2][3] = 0.0f;
+    result.mat[3][3] = 1.0f;
+    return result;
+}
+
+Matrix4x4 Matrix4x4::translation(const vec3f& pos)
+{
+    Matrix4x4 result;
+    result.mat[0][0] = 1.0f;
+    result.mat[1][0] = 0.0f;
+    result.mat[2][0] = 0.0f;
+    result.mat[3][0] = pos.x;
+
+    result.mat[0][1] = 0.0f;
+    result.mat[1][1] = 1.0f;
+    result.mat[2][1] = 0.0f;
+    result.mat[3][1] = pos.y;
+
+    result.mat[0][2] = 0.0f;
+    result.mat[1][2] = 0.0f;
+    result.mat[2][2] = 1.0f;
+    result.mat[3][2] = pos.z;
+
+    result.mat[0][3] = 0.0f;
+    result.mat[1][3] = 0.0f;
+    result.mat[2][3] = 0.0f;
+    result.mat[3][3] = 1.0f;
+    return result;
+}
+
+Matrix4x4 Matrix4x4::rotation(const vec3f& axis, float angle, const vec3f& center)
+{
+    return translation(-center) * rotation(axis, angle) * translation(center);
+}
 Matrix4x4 Matrix4x4::rotation(const vec3f& axis, float angle)
 {
     float c = std::cosf(angle);
@@ -292,7 +434,10 @@ Matrix4x4 Matrix4x4::rotation(const vec3f& axis, float angle)
     result.mat[3][3] = 1.0f;
     return result;
 }
-Matrix4x4 Matrix4x4::rotation(float yaw, float pitch, float roll);
+Matrix4x4 Matrix4x4::rotation(float yaw, float pitch, float roll)
+{
+    return rotationY(yaw) * rotationX(pitch) * rotationZ(roll);
+}
 Matrix4x4 Matrix4x4::rotation(const vec3f& _basis1, const vec3f& _basis2, const vec3f& _basis3)
 {
     vec3f basis1 = _basis1.normalize();
@@ -322,6 +467,344 @@ Matrix4x4 Matrix4x4::rotation(const vec3f& _basis1, const vec3f& _basis2, const 
     return std::move(result);
 }
 
-Matrix4x4 Matrix4x4::rotationX(float theta);
-Matrix4x4 Matrix4x4::rotationY(float theta);
-Matrix4x4 Matrix4x4::rotationZ(float theta);
+Matrix4x4 Matrix4x4::rotationX(float theta)
+{
+    float cosT = cosf(theta);
+    float sinT = sinf(theta);
+
+    Matrix4x4 result = identity();
+    result.mat[1][1] = cosT;
+    result.mat[1][2] = sinT;
+    result.mat[2][1] = -sinT;
+    result.mat[2][2] = cosT;
+    return result;
+}
+Matrix4x4 Matrix4x4::rotationY(float theta)
+{
+    float cosT = cosf(theta);
+    float sinT = sinf(theta);
+
+    Matrix4x4 result = identity();
+    result.mat[0][0] = cosT;
+    result.mat[0][2] = sinT;
+    result.mat[2][0] = -sinT;
+    result.mat[2][2] = cosT;
+    return result;
+}
+Matrix4x4 Matrix4x4::rotationZ(float theta)
+{
+    float cosT = cosf(theta);
+    float sinT = sinf(theta);
+
+    Matrix4x4 result = identity();
+    result.mat[0][0] = cosT;
+    result.mat[0][1] = sinT;
+    result.mat[1][0] = -sinT;
+    result.mat[1][1] = cosT;
+    return result;
+}
+
+Matrix4x4 Matrix4x4::camera(const vec3f& eye, const vec3f& _look, const vec3f& _up, const vec3f& _right)
+{
+    vec3f look = _look.normalize();
+    vec3f up = _up.normalize();
+    vec3f right = _right.normalize();
+
+    Matrix4x4 result;
+    result.mat[0][0] = right.x;
+    result.mat[1][0] = right.y;
+    result.mat[2][0] = right.z;
+    result.mat[3][0] = -right.dot(eye);
+
+    result.mat[0][1] = up.x;
+    result.mat[1][1] = up.y;
+    result.mat[2][1] = up.z;
+    result.mat[3][1] = -up.dot(eye);
+
+    result.mat[0][2] = look.x;
+    result.mat[1][2] = look.y;
+    result.mat[2][2] = look.z;
+    result.mat[3][2] = -look.dot(eye);
+
+    result.mat[0][3] = 0.0f;
+    result.mat[1][3] = 0.0f;
+    result.mat[2][3] = 0.0f;
+    result.mat[3][3] = 1.0f;
+    return result;
+}
+
+Matrix4x4 Matrix4x4::lookAt(const vec3f& eye, const vec3f& at, const vec3f& up)
+{
+    vec3f zAxis = (eye - at).normalize();
+    vec3f xAxis = up.cross(zAxis).normalize();
+    vec3f yAxis = zAxis.cross(xAxis).normalize();
+
+    Matrix4x4 result;
+    result.mat[0][0] = xAxis.x;
+    result.mat[1][0] = xAxis.y;
+    result.mat[2][0] = xAxis.z;
+    result.mat[3][0] = -xAxis.dot(eye);
+
+    result.mat[0][1] = yAxis.x;
+    result.mat[1][1] = yAxis.y;
+    result.mat[2][1] = yAxis.z;
+    result.mat[3][1] = -yAxis.dot(eye);
+
+    result.mat[0][2] = zAxis.x;
+    result.mat[1][2] = zAxis.y;
+    result.mat[2][2] = zAxis.z;
+    result.mat[3][2] = -zAxis.dot(eye);
+
+    result.mat[0][3] = 0.0f;
+    result.mat[1][3] = 0.0f;
+    result.mat[2][3] = 0.0f;
+    result.mat[3][3] = 1.0f;
+    return result;
+}
+
+Matrix4x4 Matrix4x4::orthogonal(float width, float height, float zNear, float zFar)
+{
+    Matrix4x4 result;
+    result.mat[0][0] = 2.0f / width;
+    result.mat[1][0] = 0.0f;
+    result.mat[2][0] = 0.0f;
+    result.mat[3][0] = 0.0f;
+
+    result.mat[0][1] = 0.0f;
+    result.mat[1][1] = 2.0f / height;
+    result.mat[2][1] = 0.0f;
+    result.mat[3][1] = 0.0f;
+
+    result.mat[0][2] = 0.0f;
+    result.mat[1][2] = 0.0f;
+    result.mat[2][2] = 1.0f / (zNear - zFar);
+    result.mat[3][2] = zNear / (zNear - zFar);
+
+    result.mat[0][3] = 0.0f;
+    result.mat[1][3] = 0.0f;
+    result.mat[2][3] = 0.0f;
+    result.mat[3][3] = 1.0f;
+    return result;
+}
+
+Matrix4x4 Matrix4x4::perspective(float width, float height, float zNear, float zFar)
+{
+    Matrix4x4 result;
+    result.mat[0][0] = 2.0f * zNear / width;
+    result.mat[1][0] = 0.0f;
+    result.mat[2][0] = 0.0f;
+    result.mat[3][0] = 0.0f;
+
+    result.mat[0][1] = 0.0f;
+    result.mat[1][1] = 2.0f * zNear / height;
+    result.mat[2][1] = 0.0f;
+    result.mat[3][1] = 0.0f;
+
+    result.mat[0][2] = 0.0f;
+    result.mat[1][2] = 0.0f;
+    result.mat[2][2] = zFar / (zNear - zFar);
+    result.mat[3][2] = zFar * zNear / (zNear - zFar);
+
+    result.mat[0][3] = 0.0f;
+    result.mat[1][3] = 0.0f;
+    result.mat[2][3] = -1.0f;
+    result.mat[3][3] = 0.0f;
+    return result;
+}
+Matrix4x4 Matrix4x4::perspectiveFov(float fov, float aspect, float zNear, float zFar)
+{
+    float width = 1.0f / tanf(fov / 2.0f), height = aspect / tanf(fov / 2.0f);
+
+    Matrix4x4 result;
+    result.mat[0][0] = width;
+    result.mat[1][0] = 0.0f;
+    result.mat[2][0] = 0.0f;
+    result.mat[3][0] = 0.0f;
+
+    result.mat[0][1] = 0.0f;
+    result.mat[1][1] = height;
+    result.mat[2][1] = 0.0f;
+    result.mat[3][1] = 0.0f;
+
+    result.mat[0][2] = 0.0f;
+    result.mat[1][2] = 0.0f;
+    result.mat[2][2] = zFar / (zNear - zFar);
+    result.mat[3][2] = zFar * zNear / (zNear - zFar);
+
+    result.mat[0][3] = 0.0f;
+    result.mat[1][3] = 0.0f;
+    result.mat[2][3] = -1.0f;
+    result.mat[3][3] = 0.0f;
+    return result;
+}
+
+Matrix4x4 Matrix4x4::perspectiveMultiFov(float fovX, float fovY, float zNear, float zFar)
+{
+    float width = 1.0f / tanf(fovX / 2.0f), height = 1.0f / tanf(fovY / 2.0f);
+
+    Matrix4x4 result;
+    result.mat[0][0] = width;
+    result.mat[1][0] = 0.0f;
+    result.mat[2][0] = 0.0f;
+    result.mat[3][0] = 0.0f;
+
+    result.mat[0][1] = 0.0f;
+    result.mat[1][1] = height;
+    result.mat[2][1] = 0.0f;
+    result.mat[3][1] = 0.0f;
+
+    result.mat[0][2] = 0.0f;
+    result.mat[1][2] = 0.0f;
+    result.mat[2][2] = zFar / (zNear - zFar);
+    result.mat[3][2] = zFar * zNear / (zNear - zFar);
+
+    result.mat[0][3] = 0.0f;
+    result.mat[1][3] = 0.0f;
+    result.mat[2][3] = -1.0f;
+    result.mat[3][3] = 0.0f;
+    return result;
+}
+
+/*Matrix4x4 Matrix4x4::face(const vec3f& v0, const vec3f& v1)
+{
+    vec3f axis = v0.cross(v1);
+    float angle = vec3f::angleBetween(v0, v1);
+
+    if (angle == 0.0f)
+    {
+        return identity();
+    }
+    else if (axis.length() == 0.0f)
+    {
+        Vec3f basis0, basis1;
+        Vec3f::CompleteOrthonormalBasis(V0, basis0, basis1);
+        return Rotation(basis0, angle);
+    }
+    else
+    {
+        return Rotation(axis, angle);
+    }
+}*/
+
+Matrix4x4 Matrix4x4::viewport(float width, float height)
+{
+    return scaling({ width * 0.5f, -height * 0.5f, 1.0f }) * translation({ width * 0.5f, height * 0.5f, 0.0f });
+}
+Matrix4x4 Matrix4x4::changeOfBasis(
+    const vec3f& source0,
+    const vec3f& source1,
+    const vec3f& source2,
+    const vec3f& sourceOrigin,
+    const vec3f& target0,
+    const vec3f& target1,
+    const vec3f& target2,
+    const vec3f& targetOrigin
+)
+{
+    Matrix4x4 rotationComponent = Matrix4x4{ source0, source1, source2 }.invert() * Matrix4x4{ target0, target1, target2 };
+    return translation(-sourceOrigin) * rotationComponent * translation(targetOrigin);
+}
+float Matrix4x4::compareMatrices(const Matrix4x4& left, const Matrix4x4& right)
+{
+    float sun = 0.0f;
+    for (unsigned int i = 0; i < 4; i++)
+    {
+        for (unsigned int i2 = 0; i2 < 4; i2++)
+        {
+            sun += math::abs(left.mat[i][i2] - right.mat[i][i2]);
+        }
+    }
+    return sun / 16.0f;
+}
+
+
+
+
+Matrix4x4 operator+ (const Matrix4x4& m0, const Matrix4x4& m1)
+{
+    return {
+        (m0._11 + m1._11), (m0._12 + m1._12), (m0._13 + m1._13), (m0._14 + m1._14),
+        (m0._21 + m1._21), (m0._22 + m1._22), (m0._23 + m1._23), (m0._24 + m1._24),
+        (m0._31 + m1._31), (m0._32 + m1._32), (m0._33 + m1._33), (m0._34 + m1._34),
+        (m0._41 + m1._41), (m0._42 + m1._42), (m0._43 + m1._43), (m0._44 + m1._44),
+    };
+}
+Matrix4x4 operator- (const Matrix4x4& m0, const Matrix4x4& m1)
+{
+    return {
+        (m0._11 - m1._11), (m0._12 - m1._12), (m0._13 - m1._13), (m0._14 - m1._14),
+        (m0._21 - m1._21), (m0._22 - m1._22), (m0._23 - m1._23), (m0._24 - m1._24),
+        (m0._31 - m1._31), (m0._32 - m1._32), (m0._33 - m1._33), (m0._34 - m1._34),
+        (m0._41 - m1._41), (m0._42 - m1._42), (m0._43 - m1._43), (m0._44 - m1._44),
+    };
+}
+
+Matrix4x4 operator* (const Matrix4x4& m0, const Matrix4x4& m1)
+{
+    Matrix4x4 result;
+    for (unsigned int i = 0; i < 4; i++)
+    {
+        for (unsigned int i2 = 0; i2 < 4; i2++)
+        {
+            float total = 0.0f;
+            for (unsigned int i3 = 0; i3 < 4; i3++)
+            {
+                total += m0.mat[i][i3] * m1.mat[i3][i2];
+            }
+            result.mat[i][i2] = total;
+        }
+    }
+    return std::move(result);
+}
+Matrix4x4 operator* (const Matrix4x4& m, float value)
+{
+    return {
+        (m._11 * value), (m._12 * value), (m._13 * value), (m._14 * value),
+        (m._21 * value), (m._22 * value), (m._23 * value), (m._24 * value),
+        (m._31 * value), (m._32 * value), (m._33 * value), (m._34 * value),
+        (m._41 * value), (m._42 * value), (m._43 * value), (m._44 * value)
+    };
+}
+Matrix4x4 operator* (float value, const Matrix4x4& m)
+{
+    return {
+        (m._11 * value), (m._12 * value), (m._13 * value), (m._14 * value),
+        (m._21 * value), (m._22 * value), (m._23 * value), (m._24 * value),
+        (m._31 * value), (m._32 * value), (m._33 * value), (m._34 * value),
+        (m._41 * value), (m._42 * value), (m._43 * value), (m._44 * value)
+    };
+}
+
+Matrix4x4& operator+= (Matrix4x4& m0, const Matrix4x4& m1)
+{
+    (m0._11 += m1._11); (m0._12 += m1._12); (m0._13 += m1._13); (m0._14 += m1._14);
+    (m0._21 += m1._21); (m0._22 += m1._22); (m0._23 += m1._23); (m0._24 += m1._24);
+    (m0._31 += m1._31); (m0._32 += m1._32); (m0._33 += m1._33); (m0._34 += m1._34);
+    (m0._41 += m1._41); (m0._42 += m1._42); (m0._43 += m1._43); (m0._44 += m1._44);
+    return m0;
+}
+Matrix4x4& operator-= (Matrix4x4& m0, const Matrix4x4& m1)
+{
+    (m0._11 -= m1._11); (m0._12 -= m1._12); (m0._13 -= m1._13); (m0._14 -= m1._14);
+    (m0._21 -= m1._21); (m0._22 -= m1._22); (m0._23 -= m1._23); (m0._24 -= m1._24);
+    (m0._31 -= m1._31); (m0._32 -= m1._32); (m0._33 -= m1._33); (m0._34 -= m1._34);
+    (m0._41 -= m1._41); (m0._42 -= m1._42); (m0._43 -= m1._43); (m0._44 -= m1._44);
+    return m0;
+}
+
+Matrix4x4& operator*= (Matrix4x4& m0, const Matrix4x4& m1)
+{
+    (m0._11 *= m1._11); (m0._12 *= m1._12); (m0._13 *= m1._13); (m0._14 *= m1._14);
+    (m0._21 *= m1._21); (m0._22 *= m1._22); (m0._23 *= m1._23); (m0._24 *= m1._24);
+    (m0._31 *= m1._31); (m0._32 *= m1._32); (m0._33 *= m1._33); (m0._34 *= m1._34);
+    (m0._41 *= m1._41); (m0._42 *= m1._42); (m0._43 *= m1._43); (m0._44 *= m1._44);
+    return m0;
+}
+Matrix4x4& operator*= (Matrix4x4& m, float value)
+{
+    (m._11 *= value); (m._12 *= value); (m._13 *= value); (m._14 *= value);
+    (m._21 *= value); (m._22 *= value); (m._23 *= value); (m._24 *= value);
+    (m._31 *= value); (m._32 *= value); (m._33 *= value); (m._34 *= value);
+    (m._41 *= value); (m._42 *= value); (m._43 *= value); (m._44 *= value);
+    return m;
+}

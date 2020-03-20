@@ -36,10 +36,10 @@ public:
 	Vector2 normalize() const;
 	static Vector2 normalize(const Vector2& v);
 
-	float distance(const Vector2& v);
+	float distance(const Vector2& v) const;
 
-	float dot(const Vector2& v);
-	float perpdot(const Vector2& v);
+	float dot(const Vector2& v) const;
+	float perpdot(const Vector2& v) const;
 
 	template<typename _Ty2>
 	explicit Vector2(const Vector2<_Ty2>& v);
@@ -62,6 +62,9 @@ bool operator== (const Vector2<_Ty>& v0, const Vector2<_Ty>& v1);
 template<typename _Ty>
 bool operator!= (const Vector2<_Ty>& v0, const Vector2<_Ty>& v1);
 
+
+template<typename _Ty>
+Vector2<_Ty> operator- (const Vector2<_Ty>& v);
 
 template<typename _Ty>
 Vector2<_Ty> operator+ (const Vector2<_Ty>& v0, const Vector2<_Ty>& v1);
@@ -188,13 +191,13 @@ template<typename _Ty>
 Vector2<_Ty> Vector2<_Ty>::normalize(const Vector2& v) { return v * v.length(); }
 
 template<typename _Ty>
-float Vector2<_Ty>::distance(const Vector2<_Ty>& v) { return (v - *this).length(); }
+float Vector2<_Ty>::distance(const Vector2<_Ty>& v) const { return (v - *this).length(); }
 
 template<typename _Ty>
-float Vector2<_Ty>::dot(const Vector2<_Ty>& v) { return x * v.x + y * v.y; }
+float Vector2<_Ty>::dot(const Vector2<_Ty>& v) const { return x * v.x + y * v.y; }
 
 template<typename _Ty>
-float Vector2<_Ty>::perpdot(const Vector2<_Ty>& v) { return y * v.x + -x * v.y; }
+float Vector2<_Ty>::perpdot(const Vector2<_Ty>& v) const { return y * v.x + -x * v.y; }
 
 template<typename _Ty> template<typename _Ty2>
 Vector2<_Ty>::Vector2(const Vector2<_Ty2>& v) :
@@ -243,6 +246,9 @@ bool operator!= (const Vector2<_Ty>& v0, const Vector2<_Ty>& v1)
 {
 	return v0.x != v1.x && v0.y != v1.y;
 }
+
+template<typename _Ty>
+Vector2<_Ty> operator- (const Vector2<_Ty>& v) { return { -v.x, -v.y }; }
 
 template<typename _Ty>
 Vector2<_Ty> operator+ (const Vector2<_Ty>& v0, const Vector2<_Ty>& v1)

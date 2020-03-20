@@ -1,9 +1,9 @@
 #pragma once
 
 #include <utility>
-#include <cmath>
 #include <cstdint>
 
+#include "math.h"
 #include "vector3d.h"
 
 template<typename _Ty>
@@ -39,10 +39,14 @@ public:
 	Vector3 normalize() const;
 	static Vector3 normalize(const Vector3& v);
 
-	float distance(const Vector3& v);
+	float distance(const Vector3& v) const;
 
-	float dot(const Vector3& v);
-	Vector3 cross(const Vector3& v);
+	float dot(const Vector3& v) const;
+	Vector3 cross(const Vector3& v) const;
+
+	static float angleBetween(const Vector3& Left, const Vector3& Right);
+
+	//static void completeOrthonormalBasis(const Vector3& Normal, Vector3& v1, Vector3& v2);
 
 	template<typename _Ty2>
 	explicit Vector3(const Vector3<_Ty2>& v);
@@ -70,6 +74,9 @@ bool operator== (const Vector3<_Ty>& v0, const Vector3<_Ty>& v1);
 template<typename _Ty>
 bool operator!= (const Vector3<_Ty>& v0, const Vector3<_Ty>& v1);
 
+
+template<typename _Ty>
+Vector3<_Ty> operator- (const Vector3<_Ty>& v);
 
 template<typename _Ty>
 Vector3<_Ty> operator+ (const Vector3<_Ty>& v0, const Vector3<_Ty>& v1);
@@ -197,7 +204,7 @@ double Vector3<_Ty>::length() const { return std::sqrt(x * x + y * y + z * z); }
 template<typename _Ty>
 Vector3<_Ty>& Vector3<_Ty>::normalize()
 {
-	double len = length();
+	_Ty len = static_cast<_Ty>(length());
 	x /= len;
 	y /= len;
 	z /= len;
@@ -207,7 +214,7 @@ Vector3<_Ty>& Vector3<_Ty>::normalize()
 template<typename _Ty>
 Vector3<_Ty> Vector3<_Ty>::normalize() const
 {
-	double len = length();
+	_Ty len = static_cast<_Ty>(length());
 	return {
 		x / len,
 		y / len,
@@ -219,13 +226,34 @@ template<typename _Ty>
 Vector3<_Ty> Vector3<_Ty>::normalize(const Vector3& v) { return std::move(v.normalize()); }
 
 template<typename _Ty>
-float Vector3<_Ty>::distance(const Vector3& v) { return (v - *this).length(); }
+float Vector3<_Ty>::distance(const Vector3& v) const { return (v - *this).length(); }
 
 template<typename _Ty>
-float Vector3<_Ty>::dot(const Vector3& v) { return x * v.x + y * v.y + z * v.z; }
+float Vector3<_Ty>::dot(const Vector3& v) const { return x * v.x + y * v.y + z * v.z; }
 
 template<typename _Ty>
-Vector3<_Ty> Vector3<_Ty>::cross(const Vector3& v) { return { y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x }; }
+Vector3<_Ty> Vector3<_Ty>::cross(const Vector3& v) const { return { y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x }; }
+
+template<typename _Ty>
+float Vector3<_Ty>::angleBetween(const Vector3& left, const Vector3& right)
+{
+	float leftLength = static_cast<float>(left.length());
+	float rightLength = static_cast<float>(right.length());
+	if (leftLength > 0.0f && rightLength > 0.0f)
+	{
+		return std::acosf(utils::clamp(left.dot(right) / leftLength / rightLength, -1.f, 1.f));
+	}
+	else
+	{
+		return 0.0f;
+	}
+}
+
+/*template<typename _Ty>
+void Vector3<_Ty>::completeOrthonormalBasis(const Vector3& Normal, Vector3& v1, Vector3& v2)
+{
+
+}*/
 
 
 template<typename _Ty> template<typename _Ty2>
@@ -290,6 +318,9 @@ bool operator!= (const Vector3<_Ty>& v0, const Vector3<_Ty>& v1)
 {
 	return v0.x != v1.x && v0.y != v1.y && v0.z != v1.z;
 }
+
+template<typename _Ty>
+Vector3<_Ty> operator- (const Vector3<_Ty>& v) { return { -v.x, -v.y, -v.z }; }
 
 template<typename _Ty>
 Vector3<_Ty> operator+ (const Vector3<_Ty>& v0, const Vector3<_Ty>& v1)

@@ -81,6 +81,40 @@ public:
 	vec4f getColumn(size_t index);
 	inline vec4f getColumn(ColumnId column) { return std::move(getColumn(static_cast<size_t>(column))); }
 
+	inline vec3f rightVector() { return { values[0], values[1], values[2] }; }
+	inline vec3f topVector() { return { values[4], values[5], values[6] }; }
+	inline vec3f frontVector() { return { values[8], values[9], values[10] }; }
+
+
+	Matrix4x4 scale(const vec3f& scaleFactors);
+
+	Matrix4x4 translate(const vec3f& pos);
+
+	Matrix4x4 rotate(const vec3f& axis, float angle, const vec3f& center);
+	Matrix4x4 rotate(const vec3f& axis, float angle);
+	Matrix4x4 rotate(float yaw, float pitch, float roll);
+	Matrix4x4 rotate(const vec3f& basis1, const vec3f& basis2, const vec3f& basis3);
+
+	Matrix4x4 rotateX(float theta);
+	Matrix4x4 rotateY(float theta);
+	Matrix4x4 rotateZ(float theta);
+
+
+	Matrix4x4 localScale(const vec3f& scaleFactors);
+
+	Matrix4x4 localTranslate(const vec3f& pos);
+
+	Matrix4x4 localRotate(const vec3f& axis, float angle, const vec3f& center);
+	Matrix4x4 localRotate(const vec3f& axis, float angle);
+	Matrix4x4 localRotate(float yaw, float pitch, float roll);
+	Matrix4x4 localRotate(const vec3f& basis1, const vec3f& basis2, const vec3f& basis3);
+
+	Matrix4x4 localRotateX(float theta);
+	Matrix4x4 localRotateY(float theta);
+	Matrix4x4 localRotateZ(float theta);
+
+
+
 	static inline Matrix4x4 identity() { return {}; }
 
 	static Matrix4x4 scaling(const vec3f& scaleFactors);
@@ -96,7 +130,41 @@ public:
 	static Matrix4x4 rotationX(float theta);
 	static Matrix4x4 rotationY(float theta);
 	static Matrix4x4 rotationZ(float theta);
+
+	static Matrix4x4 camera(const vec3f& eye, const vec3f& look, const vec3f& up, const vec3f& right);
+	static Matrix4x4 lookAt(const vec3f& eye, const vec3f& at, const vec3f& up);
+	static Matrix4x4 orthogonal(float width, float height, float zNear, float zFar);
+	static Matrix4x4 perspective(float width, float height, float zNear, float zFar);
+	static Matrix4x4 perspectiveFov(float fov, float aspect, float zNear, float zFar);
+	static Matrix4x4 perspectiveMultiFov(float fovX, float fovY, float zNear, float zFar);
+	//static Matrix4x4 face(const vec3f& v0, const vec3f& v1);
+	static Matrix4x4 viewport(float width, float height);
+	static Matrix4x4 changeOfBasis(
+		const vec3f& source0,
+		const vec3f& source1,
+		const vec3f& source2,
+		const vec3f& sourceOrigin,
+		const vec3f& target0,
+		const vec3f& target1,
+		const vec3f& target2,
+		const vec3f& targetOrigin
+	);
+	static float compareMatrices(const Matrix4x4& left, const Matrix4x4& right);
 };
+
+Matrix4x4 operator+ (const Matrix4x4& m0, const Matrix4x4& m1);
+Matrix4x4 operator- (const Matrix4x4& m0, const Matrix4x4& m1);
+
+Matrix4x4 operator* (const Matrix4x4& m0, const Matrix4x4& m1);
+Matrix4x4 operator* (const Matrix4x4& m, float value);
+Matrix4x4 operator* (float value, const Matrix4x4& m);
+
+Matrix4x4& operator+= (Matrix4x4& m0, const Matrix4x4& m1);
+Matrix4x4& operator-= (Matrix4x4& m0, const Matrix4x4& m1);
+
+Matrix4x4& operator*= (Matrix4x4& m0, const Matrix4x4& m1);
+Matrix4x4& operator*= (Matrix4x4& m, float value);
+
 
 
 

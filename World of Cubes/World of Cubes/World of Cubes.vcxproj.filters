@@ -5,6 +5,24 @@
     <ClCompile Include="src\impl\matrix44.cpp">
       <Filter>support</Filter>
     </ClCompile>
+    <ClCompile Include="src\impl\SDL.cpp">
+      <Filter>support</Filter>
+    </ClCompile>
+    <ClCompile Include="src\impl\GL.cpp">
+      <Filter>support</Filter>
+    </ClCompile>
+    <ClCompile Include="src\impl\color.cpp">
+      <Filter>support</Filter>
+    </ClCompile>
+    <ClCompile Include="src\impl\time.cpp">
+      <Filter>support</Filter>
+    </ClCompile>
+    <ClCompile Include="src\impl\clock.cpp">
+      <Filter>support</Filter>
+    </ClCompile>
+    <ClCompile Include="src\impl\game_controller.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="support">
@@ -12,6 +30,9 @@
     </Filter>
     <Filter Include="support\vector_impl">
       <UniqueIdentifier>{3ef0c1e0-96f7-42ce-beed-8776ef43d4c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine">
+      <UniqueIdentifier>{faf4474a-e183-4a32-a48f-91992be6a925}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -29,6 +50,27 @@
     </ClInclude>
     <ClInclude Include="src\include\support\matrix44.h">
       <Filter>support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\support\math.h">
+      <Filter>support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\support\SDL.h">
+      <Filter>support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\support\GL.h">
+      <Filter>support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\support\color.h">
+      <Filter>support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\support\time.h">
+      <Filter>support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\support\clock.h">
+      <Filter>support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\include\engine\game_controller.h">
+      <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

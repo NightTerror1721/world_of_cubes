@@ -41,7 +41,7 @@ public:
 	Vector4 normalize() const;
 	static Vector4 normalize(const Vector4& v);
 
-	float distance(const Vector4& v);
+	float distance(const Vector4& v) const;
 
 	template<typename _Ty2>
 	explicit Vector4(const Vector4<_Ty2>& v);
@@ -75,6 +75,9 @@ bool operator== (const Vector4<_Ty>& v0, const Vector4<_Ty>& v1);
 template<typename _Ty>
 bool operator!= (const Vector4<_Ty>& v0, const Vector4<_Ty>& v1);
 
+
+template<typename _Ty>
+Vector4<_Ty> operator- (const Vector4<_Ty>& v);
 
 template<typename _Ty>
 Vector4<_Ty> operator+ (const Vector4<_Ty>& v0, const Vector4<_Ty>& v1);
@@ -221,7 +224,7 @@ Vector4<_Ty>& Vector4<_Ty>::normalize()
 template<typename _Ty>
 Vector4<_Ty> Vector4<_Ty>::normalize() const
 {
-	double len = length();
+	_Ty len = static_cast<_Ty>(length());
 	return {
 		x / len,
 		y / len,
@@ -233,7 +236,7 @@ template<typename _Ty>
 Vector4<_Ty> Vector4<_Ty>::normalize(const Vector4& v) { return std::move(v.normalize()); }
 
 template<typename _Ty>
-float Vector4<_Ty>::distance(const Vector4& v) { return (v - *this).length(); }
+float Vector4<_Ty>::distance(const Vector4& v) const { return (v - *this).length(); }
 
 template<typename _Ty> template<typename _Ty2>
 Vector4<_Ty>::Vector4(const Vector4<_Ty2>& v) :
@@ -315,6 +318,9 @@ bool operator!= (const Vector4<_Ty>& v0, const Vector4<_Ty>& v1)
 {
 	return v0.x != v1.x && v0.y != v1.y && v0.z != v1.z && v0.w != v1.w;
 }
+
+template<typename _Ty>
+Vector4<_Ty> operator- (const Vector4<_Ty>& v) { return { -v.x, -v.y, -v.z, -v.w }; }
 
 template<typename _Ty>
 Vector4<_Ty> operator+ (const Vector4<_Ty>& v0, const Vector4<_Ty>& v1)
